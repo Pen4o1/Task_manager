@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('project_id');
             $table->string('task_name');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
             $table->foreign('project_id')->references('id')->on('project')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
