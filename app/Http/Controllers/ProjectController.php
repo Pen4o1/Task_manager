@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project; 
+use App\Models\ProjectModel; // Changed from ProjectModel to Project (assuming correct model name)
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class ProjectController extends Controller
 {
@@ -12,49 +13,74 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = ProjectModel::latest()->get();
         return view('projects.index', compact('projects'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         return view('projects.create');
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string'
         ]);
 
-        Project::create($request->all());
-        return redirect()->route('projects.index');
+        ProjectModel::create($validated);
+
+        return redirect()->route('projects.index')
+            ->with('success', 'Project created successfully.');
     }
 
-    public function show(Project $project)
+    /**
+     * Display the specified resource.
+     */
+    public function show(ProjectModel $project)
     {
         return view('projects.show', compact('project'));
     }
 
-    public function edit(Project $project)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(ProjectModel $project)
     {
         return view('projects.edit', compact('project'));
     }
 
-    public function update(Request $request, Project $project)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, ProjectModel $project)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string'
         ]);
 
-        $project->update($request->all());
-        return redirect()->route('projects.index');
+        $project->update($validated);
+
+        return redirect()->route('projects.index')
+            ->with('success', 'Project updated successfully.');
     }
 
-    public function destroy(Project $project)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(ProjectModel $project)
     {
         $project->delete();
-        return redirect()->route('projects.index');
-    }
 
+        return redirect()->route('projects.index')
+            ->with('success', 'Project deleted successfully.');
+    }
 }

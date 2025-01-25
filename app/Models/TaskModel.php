@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TaskModel extends Model
 {
-    protected $table = 'task';
-    protected $fillable = ['Task_name', 'project_id'];
+    use HasFactory;
+
+    protected $table = 'tasks';
+
+    protected $fillable = ['title', 'status', 'project_id'];
 
     public function project()
     {
@@ -18,5 +22,4 @@ class TaskModel extends Model
     {
         return $this->hasMany(Comment::class);
     }
-
 }
