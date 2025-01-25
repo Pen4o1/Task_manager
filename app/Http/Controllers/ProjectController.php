@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProjectModel; // Changed from ProjectModel to Project (assuming correct model name)
+use App\Models\ProjectModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 

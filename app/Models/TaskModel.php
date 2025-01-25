@@ -15,11 +15,11 @@ class TaskModel extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(ProjectModel::class);
     }
 
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(CommentModel::class, 'task_id');
     }
 }

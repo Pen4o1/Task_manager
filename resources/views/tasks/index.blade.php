@@ -17,7 +17,7 @@
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
         @foreach($tasks as $task)
-        <tr>
+        <tr x-data="{ open: false }">
             <td class="px-6 py-4 whitespace-nowrap">{{ $task->title }}</td>
             <td class="px-6 py-4">
                 <span class="px-2 py-1 text-sm rounded-full 
@@ -28,16 +28,48 @@
                 </span>
             </td>
             <td class="px-6 py-4">{{ $task->project->name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                 <a href="{{ route('tasks.edit', $task) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                 <form class="inline-block" action="{{ route('tasks.destroy', $task) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="text-red-600 hover:text-red-900 ml-2">Delete</button>
+                    <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
                 </form>
+                <button @click="open = !open" class="text-green-600 hover:text-green-900">
+                    Add Comment
+                </button>
+                <a href="{{ route('tasks.show', $task) }}" class="text-blue-600 hover:text-blue-900">
+                    View Comments ({{ $task->comments->count() }})
+                </a>
+            </td>
+        </tr>
+        <tr x-show="open" class="bg-gray-50">
+            <td colspan="4" class="px-6 py-4">
+                <form action="{{ route('comments.store') }}" method="POST" class="flex gap-4">
+                    @csrf
+                    <input type="hidden" name="task_id" value="{{ $task->id }}">
+                    <textarea 
+                        name="content" 
+                        rows="2"
+                        class="flex-1 rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Write your comment..."
+                        required
+                    ></textarea>
+                    <button 
+                        type="submit"
+                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 self-start"
+                    >
+                        Post Comment
+                    </button>
+                </form>
+                @error('content')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </td>
         </tr>
         @endforeach
     </tbody>
 </table>
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @endsection
